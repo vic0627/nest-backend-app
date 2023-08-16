@@ -1,5 +1,7 @@
 # NestJS
 
+node^18.15.0
+
 ## 安裝
 
 用 `npm` 將 NestCLI 全域安裝，之後就能在 terminal 使用 `nest` 指令。

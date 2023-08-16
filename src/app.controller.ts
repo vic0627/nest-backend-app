@@ -1,18 +1,18 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Get, Inject, Param } from '@nestjs/common';
 import { AppService } from './app.service';
-import { HandsomeModule } from './handsome/handsome.module';
+import { ParseIntPipe } from './pipes/parse-int/parse-int.pipe';
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    @Inject('HANDSOME_MAN') private readonly handsome_man: HandsomeModule,
-  ) {
-    console.log(handsome_man);
-  }
+  constructor(private readonly appService: AppService) {}
 
   @Get()
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @Get(':id')
+  getUser(@Param('id', ParseIntPipe) id: number) {
+    return { id, name: 'Vic' };
   }
 }

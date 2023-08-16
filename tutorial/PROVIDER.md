@@ -276,3 +276,53 @@ export class AppModule {}
 ```
 
 物件的 `provide` 即 `token`，`useClass` 則是指定使用的 `class` 為何，進而建立實例。
+
+## 匯出自訂 Provider
+
+在共享模組，可以透過 Module 的 exports 將 Provider 匯出，而自訂 Provider 可以透過 Module 中 `Providers` 的展開式先用變數儲存起來，再將該展開式放到 providers 與 exports 中。
+
+### 非同步 Provider
+
+在需要等待某些非同步的操作來建立 Provider 時，比如：需要與資料庫連線，**Nest App 會等待該 Provider 建立完成才正式啟動**。
+
+結合自訂 Provider 的範例：
+
+```ts
+const HANDSOME_VIC = {
+  provide: 'HANDSOME_MAN',
+  useFactory: async () => {
+    const getVic = new Promise((resolve) => {
+      setTimeout(() => resolve({ name: 'VIC' }), 3000);
+    });
+    const Vic = await getVic;
+    return Vic;
+  },
+};
+
+@Module({
+  providers: [HANDSOME_VIC],
+  exports: [HANDSOME_VIC],
+})
+export class HandsomeModule {}
+```
+
+### 自選式 Provider
+
+當 Provider 沒有被提供但卻注入的情況，Nest 會因為找不到對應的 Provider 而報錯，這類型情況通常會給個預設值代替沒被注入的 Provider，然後要在注入的地方添加 `@Optional` 裝飾器。
+
+```ts
+@Controller()
+export class AppController {
+  constructor(
+    private readonly appService: AppService,
+    @Optional() @Inject('HANDSOME_MAN') private readonly handsomeMan = { name: '' }
+    ) {
+      console.log(this.handsomeMan);
+  }
+
+  @Get()
+  getHello(): string {
+    return this.appService.getHello();
+  }
+}
+```
