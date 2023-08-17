@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Controller,
   Get,
@@ -7,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { HelloWorldInterceptor } from './interceptors/hello-world/hello-world.interceptor';
+import { User } from './decorators/user/user.decorator';
 // import { ParseIntPipe } from './pipes/parse-int/parse-int.pipe';
 
 @Controller()
@@ -15,8 +17,8 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getHello(@User() user: any): string {
+    return user;
   }
 
   // @Get(':id')

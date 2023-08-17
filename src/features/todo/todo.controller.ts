@@ -1,9 +1,11 @@
+/* eslint-disable prettier/prettier */
 import {
   Controller,
   Get,
   Post,
   ValidationPipe,
   UsePipes,
+  UseGuards,
   Body,
   HttpStatus,
   NotAcceptableException,
@@ -11,6 +13,7 @@ import {
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/creare-todo.dto';
 import { ValidationError } from 'class-validator';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 
 const exceptionFactory = (errors: ValidationError[]) => {
   return new NotAcceptableException({
@@ -21,6 +24,7 @@ const exceptionFactory = (errors: ValidationError[]) => {
 };
 
 @Controller('todos')
+@UseGuards(AuthGuard)
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 

@@ -10,6 +10,8 @@ node^18.15.0
 - [Exception & Excrption Filter](./tutorial/EXCEPTION.md)
 - [Pipe](./tutorial/PIPE.md)
 - [Middleware](./tutorial/MIDDLEWARE.md)
+- [Interceptor](./tutorial/INTERCEPTOR.md)
+- [Guard](./tutorial/GUARD.md)
 
 ## 基本概念
 
@@ -28,7 +30,7 @@ Controller 與 Service 透過 Module 建立關係後，即可將 Service **注�
 用 `npm` 將 NestCLI 全域安裝，之後就能在 terminal 使用 `nest` 指令。
 
 ```bash
-npm install -g @nest/cli
+npm install -g @nestjs/cli
 ```
 
 查看可使用指令：
