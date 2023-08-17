@@ -14,6 +14,8 @@ throw new Error('some error')
 
 在拋出錯誤後，需要有個機制去捕捉這些錯誤，並從中提取資訊來整理回應的格式，Nest 在底層已經幫我們做了一套錯誤處理機制 - **Exception filter**，它會去捕捉拋出的錯誤，並將錯誤訊息、HttpCode 進行友善地包裝，而 Nest 內建的 Exception filter 會去偵測拋出的錯誤是什麼類型的，它只能夠接受 Nest 內建的 `HttpException` 與繼承該類別的 Exception，若不屬於這類型的錯誤就會直接拋出 `Internal server error`。
 
+![Exception](./imgs/c4.png)
+
 ## 標準 Exception
 
 Nest 內建的標準 Exception 即為 `HttpException`，它是一個標準的 `class`，透過給定 `constructor` 兩個必填參數來自訂錯誤訊息與 HttpCode。

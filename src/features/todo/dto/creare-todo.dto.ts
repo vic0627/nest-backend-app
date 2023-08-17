@@ -8,6 +8,7 @@ export class CreateTodoDto {
   public readonly title: string;
 
   @IsString()
+  @IsNotEmpty()
   @IsOptional()
   public readonly description?: string;
 }

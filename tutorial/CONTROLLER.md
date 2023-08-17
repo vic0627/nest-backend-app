@@ -1,6 +1,8 @@
-# Controller 控制器
+# Controller
 
 一個處理客戶端請求，並將相同性質的資源整合在一起的元件。
+
+![Controller](./imgs/c3.png)
 
 ## 建置
 

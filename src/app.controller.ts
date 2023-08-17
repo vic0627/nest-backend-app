@@ -1,8 +1,16 @@
-import { Controller, Get, Inject, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  Param,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AppService } from './app.service';
-import { ParseIntPipe } from './pipes/parse-int/parse-int.pipe';
+import { HelloWorldInterceptor } from './interceptors/hello-world/hello-world.interceptor';
+// import { ParseIntPipe } from './pipes/parse-int/parse-int.pipe';
 
 @Controller()
+@UseInterceptors(HelloWorldInterceptor)
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
@@ -11,8 +19,8 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get(':id')
-  getUser(@Param('id', ParseIntPipe) id: number) {
-    return { id, name: 'Vic' };
-  }
+  // @Get(':id')
+  // getUser(@Param('id', ParseIntPipe) id: number) {
+  //   return { id, name: 'Vic' };
+  // }
 }

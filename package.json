@@ -2,7 +2,7 @@
   "name": "nest-backend-app",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "VICTOR HSU",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -70,5 +70,13 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
+  "engines": {
+    "node": "~18.15.0",
+    "npm": "~9.8.1"
   }
 }

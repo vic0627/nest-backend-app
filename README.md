@@ -2,6 +2,27 @@
 
 node^18.15.0
 
+傳送門：
+
+- [Controller](./tutorial/CONTROLLER.md)
+- [Module](./tutorial/MODULE.md)
+- [Provider](./tutorial/PROVIDER.md)
+- [Exception & Excrption Filter](./tutorial/EXCEPTION.md)
+- [Pipe](./tutorial/PIPE.md)
+- [Middleware](./tutorial/MIDDLEWARE.md)
+
+## 基本概念
+
+Nest 採用模組化設計，將各個不同的功能區塊打包成 **模組 (Module)**，而 Module 必定有 **一個以上**，並且是以 **樹狀結構** 發散出去，最頂部的 Module 稱為 **根模組 (Root Module)**。
+
+![Module](./tutorial/imgs/n1.png)
+
+一個 **有路由機制** 的 Module 會帶有 **控制器 (Controller)** 與 **服務 (Service)**。
+
+![Controller](./tutorial/imgs/n2.png)
+
+Controller 與 Service 透過 Module 建立關係後，即可將 Service **注入 (Inject)** 到 Controller 中使用，這樣的好處是可以職責分離，把處理請求的操作交給 Controller，把處理邏輯的部分交給 Service。
+
 ## 安裝
 
 用 `npm` 將 NestCLI 全域安裝，之後就能在 terminal 使用 `nest` 指令。
