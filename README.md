@@ -12,6 +12,7 @@ node^18.15.0
 - [Middleware](./tutorial/MIDDLEWARE.md)
 - [Interceptor](./tutorial/INTERCEPTOR.md)
 - [Guard](./tutorial/GUARD.md)
+- [Decorator](./tutorial/DDECORATOR.md)
 
 ## 基本概念
 
