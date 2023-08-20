@@ -14,17 +14,25 @@ import { User } from './decorators/user/user.decorator';
 // import { RoleGuard } from './guards/role/role.guard';
 // import { Roles } from './decorators/roles/roles.decorator';
 import { Auth } from './decorators/auth/auth.decorator';
+import { ConfigurationService } from './common/configuration/configuration.service';
 
 @Controller()
 @UseInterceptors(HelloWorldInterceptor)
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly configService: ConfigurationService) {}
 
-  @Auth('staff')
+  // constructor(private readonly appService: AppService) {}
+
   @Get()
-  getHello(@User() user: any): any {
-    return user;
+  getHello() {
+    return { username: this.configService.get('USERNAME') };
   }
+
+  // @Auth('staff')
+  // @Get()
+  // getHello(@User() user: any): any {
+  //   return user;
+  // }
 
   // @Get(':id')
   // getUser(@Param('id', ParseIntPipe) id: number) {

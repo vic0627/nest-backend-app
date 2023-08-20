@@ -12,9 +12,15 @@ import { LoggerMiddleware } from './middlewares/logger/logger.middleware';
 import { AddUserMiddleware } from './middlewares/add-user/add-user.middleware';
 // import { CopyTodoModule } from './features/copy-todo/copy-todo.module';
 // import { HandsomeModule } from './handsome/handsome.module';
+import { ConfigurationModule } from './common/configuration/configuration.module';
 
 @Module({
-  imports: [TodoModule],
+  imports: [
+    TodoModule,
+    ConfigurationModule.forRoot({
+      path: `../${process.env.NODE_ENV || 'development'}.env`,
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
