@@ -25,3 +25,36 @@ export class AppController {
 透過 `ModuleRef.get()` 方法可以取得 **當前 Module** 下的 **任何元件**，如：Controller、Service、Guard 等。
 
 >**注意**：此方法無法在非預設作用域的配置下使用。
+
+透過 `ModuleRef` 來取得 `AppService` 的實例：
+
+```ts
+// ...
+import { ModuleRef } from '@nestjs/core';
+
+@Controller()
+export class AppController {
+  private readonly appService: AppService;
+  private readonly copyTodoService: CopyTodoService;
+
+  constructor(
+    private readonly moduleRef: ModuleRef
+    ) {
+      // 獲取一般實例
+      this.appService = this.moduleRef.get(AppService);
+      // 獲取全域實例
+      this.copyTodoService = this.moduleRef.get(CopyTodoService, {
+        strict: false,
+      });
+    }
+
+    @Get()
+    getHello() {
+      const hello = this.appService.getHello();
+      const todo = this.copyTodoService.getTodos();
+      return { hello, todo };
+    }
+}
+```
+
+### 處理非預設作用域之 Provider

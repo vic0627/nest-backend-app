@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
-import { CopyTodoController } from './copy-todo.controller';
-import { TodoModule } from '../todo/todo.module';
+/* eslint-disable prettier/prettier */
+import { Module, Global } from '@nestjs/common';
+import { CopyTodoService } from './copy-todo.service';
 
+@Global()
 @Module({
-  controllers: [CopyTodoController],
-  imports: [TodoModule],
+  providers: [CopyTodoService],
+  exports: [CopyTodoService],
 })
 export class CopyTodoModule {}

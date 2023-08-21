@@ -49,7 +49,7 @@ Nest 中，預設情況下 Module 都是單例的，也就是說可以在各模�
 
 ### 全域模組 Global Module
 
-當有 Module 要與多數 Module 共用時，會一直在各 Module 進行匯入的動作，這時候可以透過提升 Module 為 全域模組，讓其他模組不需要匯入也能夠使用，只需要在 Module 上再添加一個 @Global 的裝飾器即可。
+當有 Module 要與多數 Module 共用時，會一直在各 Module 進行匯入的動作，這時候可以透過提升 Module 為全域模組，讓其他模組不需要匯入也能夠使用，只需要在 Module 上再添加一個 `@Global` 的裝飾器即可。
 
 ```ts
 import { Module, Global } from '@nestjs/common';
@@ -64,6 +64,8 @@ import { TodoService } from './todo.service';
 })
 export class TodoModule {}
 ```
+
+>**注意**：加上 `@Global` 的全域模組，仍然要在與根模組 `AppModule` 有相關聯性的任意模組中建立一次實例。
 
 >**注意**：雖然可以透過提升為全域來減少匯入的次數，但非必要情況應少用，這樣才是好的設計準則。
 
