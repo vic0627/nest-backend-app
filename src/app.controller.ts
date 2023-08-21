@@ -13,20 +13,33 @@ import { User } from './decorators/user/user.decorator';
 // import { ParseIntPipe } from './pipes/parse-int/parse-int.pipe';
 // import { RoleGuard } from './guards/role/role.guard';
 // import { Roles } from './decorators/roles/roles.decorator';
-import { Auth } from './decorators/auth/auth.decorator';
-import { ConfigurationService } from './common/configuration/configuration.service';
+// import { Auth } from './decorators/auth/auth.decorator';
+// import { ConfigurationService } from './common/configuration/configuration.service';
+import { ConfigService } from '@nestjs/config';
 
 @Controller()
 @UseInterceptors(HelloWorldInterceptor)
 export class AppController {
-  constructor(private readonly configService: ConfigurationService) {}
+  constructor(private readonly configService: ConfigService) {}
+
+  // constructor(private readonly configService: ConfigurationService) {}
 
   // constructor(private readonly appService: AppService) {}
 
   @Get()
   getHello() {
-    return { username: this.configService.get('USERNAME') };
+    const SERECT_KEY = this.configService.get('SERECT_KEY');
+    const PORT = this.configService.get('PORT');
+    const database = this.configService.get('database');
+    const host = this.configService.get('database.host');
+    const app = this.configService.get('app');
+    return { PORT, SERECT_KEY, database, host, app };
   }
+
+  // @Get()
+  // getHello() {
+  //   return { username: this.configService.get('USERNAME') };
+  // }
 
   // @Auth('staff')
   // @Get()

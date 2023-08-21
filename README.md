@@ -13,6 +13,10 @@ node^18.15.0
 - [Interceptor](./tutorial/INTERCEPTOR.md)
 - [Guard](./tutorial/GUARD.md)
 - [Decorator](./tutorial/DDECORATOR.md)
+- [Dynamic Module](./tutorial/DYNAMICMODULE.md)
+- [ConfigModule](./tutorial/CONFIGMODULE.md)
+- [Scope](./tutorial/SCOPE.md)
+- [Lifecycle Hooks](./tutorial/LIFECYCLEKOOKS.md)
 
 ## 基本概念
 

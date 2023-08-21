@@ -12,25 +12,30 @@ import {
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/creare-todo.dto';
-import { ValidationError } from 'class-validator';
+// import { ValidationError } from 'class-validator';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { ConfigService } from '@nestjs/config';
 
-const exceptionFactory = (errors: ValidationError[]) => {
-  return new NotAcceptableException({
-    code: HttpStatus.NOT_ACCEPTABLE,
-    message: '格式錯誤',
-    errors,
-  });
-};
+// const exceptionFactory = (errors: ValidationError[]) => {
+//   return new NotAcceptableException({
+//     code: HttpStatus.NOT_ACCEPTABLE,
+//     message: '格式錯誤',
+//     errors,
+//   });
+// };
 
 @Controller('todos')
 @UseGuards(AuthGuard)
 export class TodoController {
-  constructor(private readonly todoService: TodoService) {}
+  constructor(
+    private readonly todoService: TodoService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Get()
   getAll() {
-    return this.todoService.getTodos();
+    const app = this.configService.get('app');
+    return app;
   }
 
   @Post()

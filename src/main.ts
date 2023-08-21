@@ -1,13 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { config } from 'dotenv';
+import { ConfigService } from '@nestjs/config';
+
+config();
 
 declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  const configService = app.get(ConfigService);
+  const port = configService.get('PORT');
+  app.enableShutdownHooks();
+  await app.listen(port);
 
-  console.log('[App] listening at port 3000!');
+  console.log(`[App] listening at port ${port}!`);
 
   if (module.hot) {
     module.hot.accept();

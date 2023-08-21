@@ -1,8 +1,10 @@
+/* eslint-disable prettier/prettier */
 import { Inject, Injectable } from '@nestjs/common';
 
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
+
 import { ENV_PATH } from './constants/token.const';
 
 @Injectable()
@@ -18,8 +20,7 @@ export class ConfigurationService {
   }
 
   private setEnvironment(): void {
-    const filePath = path.resolve(__dirname, './', this.path);
+    const filePath = path.resolve(__dirname, '../', this.path);
     this.config = dotenv.parse(fs.readFileSync(filePath));
-    console.log(this.config);
   }
 }

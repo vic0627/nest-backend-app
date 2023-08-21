@@ -62,7 +62,16 @@ import { ENV_PATH } from './constants/token.const';
 // 並非靜態模組，拿掉 `@Module` 裝飾器所有參數。
 @Module({})
 export class ConfigurationModule {
+  
+    // 定義返回 `DynamicModule` 的靜態方法
     static forRoot(options: { path: string }): DynamicModule {
+
+        /**
+         * 根據 `DynamicModule` 的規格書，其屬性需求如下：
+         * @property {Type<any>} module - 模組來源
+         * @property {boolean} [global] - 是否為全域模組
+         * 其餘屬性接繼承自 `ModuleMetadata`：`imports?`、`controllers?`、`providers?`、`exports?`
+         */
         return {
             providers: [
                 {
@@ -76,5 +85,88 @@ export class ConfigurationModule {
             global: true
         }
     }
+}
+```
+
+設計 `ConfigurationService` 的內容了，在 `constructor` 注入剛才設計的環境變數路徑 `ENV_PATH`，接著設計 `setEnvironment` 去讀取並解析 `.env` 檔，然後寫入 `config` 屬性中，最後設計一個 `get(key: string)` 的方法來提取要用的環境變數：
+
+```ts
+import { Inject, Injectable } from '@nestjs/common';
+
+import * as fs from 'fs';
+import * as path from 'path';
+import * as dotenv from 'dotenv';
+
+import { ENV_PATH } from './constants/token.const';
+
+@Injectable()
+export class ConfigurationService {
+
+  // 存儲從 .env 檔案中解析出的環境變數。
+  private config: any;
+
+  // 使用 `@Inject()` 裝飾器將 `path` 參數標記為依賴注入，並將其值設定為從 `ENV_PATH` 常數 `token` 注入的值。
+  constructor(@Inject(ENV_PATH) private readonly path: string) {
+    // 呼叫 `setEnvironment()` 方法，初始化此服務。
+    this.setEnvironment();
+  }
+
+  // 公開方法，用於從 `config` 屬性中獲取特定環境變數的值。
+  public get(key: string): string {
+    return this.config[key];
+  }
+
+  // 私有方法，解析 `.env` 檔案並將環境變數存儲在 `config` 屬性中。
+  private setEnvironment(): void {
+
+    // 使用 node built-in module 中的 `path.resolve()` 方法取得 `.env` 檔案的存放路徑
+    // `path.resolve()`：根據傳入的路徑組合出一組絕對/相對路徑
+    const filePath = path.resolve(__dirname, './', this.path);
+
+    // 將 `.env` 轉換為 JS 物件並放置於 `this.config` 中。
+    // `dotenv.parse()`：從指定的 `.env` 檔案中讀取內容並將其解析為一個 JS 物件
+    // `fs.readFileSync()`：從指定的 `filePath` 讀取 `.env` 檔案的內容。這將返回一個包含 `.env` 檔案內容的原始文字串。
+    this.config = dotenv.parse(fs.readFileSync(filePath));
+  }
+}
+```
+
+## 使用 Dynamic Module
+
+先在專案路徑下新增 `development.env` 檔：
+
+```text
+USERNAME=VIC
+```
+
+調整 `app.module.ts` 的內容：
+
+```ts
+@Module({
+  imports: [
+    ConfigurationModule.forRoot({
+      // 根據環境變數，選擇讀取不同 `.env`
+      path: `${process.env.NODE_ENV || 'development'}.env`
+    })
+  ],
+  controllers: [AppController],
+  providers: [AppService]
+})
+export class AppModule {}
+```
+
+調整 `app.controller.ts` 的內容：
+
+```ts
+@Controller()
+export class AppController {
+  constructor(
+    private readonly configService: ConfigurationService
+  ) {}
+
+  @Get()
+  getHello() {
+    return { username: this.configService.get('USERNAME') };
+  }
 }
 ```

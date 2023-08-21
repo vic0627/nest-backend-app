@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigurationService } from './configuration.service';
 import { ENV_PATH } from './constants/token.const';
