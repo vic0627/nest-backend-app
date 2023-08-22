@@ -1,5 +1,14 @@
 # Interceptor
 
+- [設計 Interceptor](#設計-interceptor)
+  - [CallHandler](#callhandler)
+  - [ExecutionContext](#executioncontext)
+    - [取得 Controller Class](#取得-controller-class)
+    - [取得 Controller Method](#取得-controller-method)
+- [使用 Interceptor](#使用-interceptor)
+  - [全域 Interceptor](#全域-interceptor)
+  - [用依賴注入實作全域 Interceptor](#用依賴注入實作全域-interceptor)
+
 中文名稱為攔截器，受到 **剖面導向程式設計 (Aspect Oriented Programming)** 的啟發，為原功能的擴展邏輯，其特點如下：
 
 - 可以在執行 Controller 的方法 **之前** 與 **之後** 設計邏輯。
@@ -56,7 +65,7 @@ export class HelloWorldInterceptor implements NestInterceptor {
 const Controller: TodoController = context.getClass<TodoController>();
 ```
 
-#### 取得 Controller method
+#### 取得 Controller Method
 
 透過 `getHandler()` 取得當前請求對應的 Controller method，假設當前請求會呼叫 `TodoController` 的 `getAll()`，那就會回傳 `getAll` 這個函式：
 

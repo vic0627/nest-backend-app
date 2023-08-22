@@ -1,5 +1,10 @@
 # Guard
 
+- [設計 Guard](#設計-guard)
+- [使用 Guard](#使用-guard)
+- [全域 Guard](#全域-guard)
+  - [用依賴注入實作全域 Guard](#用依賴注入實作全域-guard)
+
 Guard 是一種檢測機制，經常用在身份驗證與授權，當有未經授權的請求時，將會由 Guard 攔截並擋下。
 
 從下圖可以看出 Guard 是執行在 Middleware 之後、Interceptor 之前：

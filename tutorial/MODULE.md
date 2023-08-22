@@ -4,6 +4,13 @@
 
 >事實上，Module 的功能 不一定 要包含 Controller，它可以只是一個很單純的功能所包裝而成的模組，比如說：MongooseModule。
 
+- [建置](#建置)
+- [參數](#參數)
+- [功能模組 Feature Module](#功能模組-feature-module)
+- [共享模組 Shared Module](#共享模組-shared-module)
+- [全域模組 Global Module](#全域模組-global-module)
+- [常用模組 Common Module](#常用模組-common-module)
+
 ## 建置
 
 所有的 Module 都必須使用 @Module 裝飾器來定義。可以用 NestCLI 快速生成 Module：

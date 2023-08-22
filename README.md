@@ -17,6 +17,9 @@ node^18.15.0
 - [ConfigModule](./tutorial/CONFIGMODULE.md)
 - [Scope](./tutorial/SCOPE.md)
 - [Lifecycle Hooks](./tutorial/LIFECYCLEKOOKS.md)
+- [Module Reference](./tutorial/MODULEREFERENCE.md)
+- [File Upload](./tutorial/FILEUPLOAD.md)
+- [HttpModule](./tutorial/HTTPMODULE.md)
 
 ## 基本概念
 

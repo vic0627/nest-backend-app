@@ -2,11 +2,22 @@
 import {
   Controller,
   Get,
+  Post,
   Inject,
   Param,
   UseInterceptors,
   UseGuards,
+  UploadedFile,
+  UploadedFiles,
+  Res,
 } from '@nestjs/common';
+import {
+  FileInterceptor,
+  FilesInterceptor,
+  FileFieldsInterceptor,
+  AnyFilesInterceptor,
+} from '@nestjs/platform-express';
+import { Response } from 'express';
 import { AppService } from './app.service';
 import { HelloWorldInterceptor } from './interceptors/hello-world/hello-world.interceptor';
 import { User } from './decorators/user/user.decorator';
@@ -19,6 +30,9 @@ import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
 import { CopyTodoService } from './features/copy-todo/copy-todo.service';
 // import { HandsomeModule } from './handsome/handsome.module';
+import { Observable, filter, map } from 'rxjs';
+import { Todo } from './common/models/todo.model';
+import { ParseIntPipe } from './pipes/parse-int/parse-int.pipe';
 
 @Controller()
 @UseInterceptors(HelloWorldInterceptor)
@@ -69,4 +83,56 @@ export class AppController {
   // getUser(@Param('id', ParseIntPipe) id: number) {
   //   return { id, name: 'Vic' };
   // }
+
+  @Post('/upload-file')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadSingleFile(@UploadedFile() file: Express.Multer.File) {
+    return file;
+  }
+
+  @Post('/upload-files')
+  @UseInterceptors(FilesInterceptor('files'))
+  uploadMultiFiles(@UploadedFiles() files: Express.Multer.File[]) {
+    return files.map(({ fieldname, originalname }) => ({
+      fieldname,
+      originalname,
+    }));
+  }
+
+  @Post('/upload-multiple-files')
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'filesA' }, { name: 'filesB' }]),
+  )
+  uploadMultipleFiles(
+    @UploadedFiles() files: { [x: string]: Express.Multer.File[] },
+  ) {
+    const { filesA, filesB } = files;
+    const list = [...filesA, ...filesB];
+    return list.map(({ fieldname, originalname }) => ({
+      fieldname,
+      originalname,
+    }));
+  }
+
+  @Post('/upload-multiple-files-any')
+  @UseInterceptors(AnyFilesInterceptor())
+  uploadAnyMultipleFiles(@UploadedFiles() files: Express.Multer.File[]) {
+    return files;
+  }
+
+  @Get('/http-todos')
+  getTodos() {
+    return this.appService.getTodos();
+  }
+
+  @Get('/http-todos/:userId')
+  getTodo(@Param('userId', ParseIntPipe) userId: string) {
+    const userIdNumber = parseInt(userId);
+    return this.appService
+      .getTodos()
+      .pipe(
+        map((todos) => todos.filter((todo) => todo.userId === userIdNumber)),
+      );
+  }
+
 }

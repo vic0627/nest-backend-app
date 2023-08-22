@@ -4,6 +4,23 @@
 
 ![Controller](./imgs/c3.png)
 
+- [建置](#建置)
+- [Route 路由](#route-路由)
+  - [HTTP Methods](#http-methods)
+  - [Children Route 子路由](#children-route-子路由)
+  - [通用路由符號](#通用路由符號)
+  - [Path Parameters 路由參數](#path-parameters-路由參數)
+  - [Query Parameters 查詢參數](#query-parameters-查詢參數)
+  - [Http Code 狀態碼](#http-code-狀態碼)
+  - [Body 主體資料](#body-主體資料)
+  - [DTO](#dto)
+  - [Headers 標頭](#headers-標頭)
+  - [參數裝飾器](#參數裝飾器)
+  - [處理回應的方式](#處理回應的方式)
+    - [標準模式](#標準模式)
+    - [函式庫模式](#函式庫模式)
+    - [模式的限制](#模式的限制)
+
 ## 建置
 
 使用 NestCLI 快速生成：
@@ -198,7 +215,7 @@ export class TodoController {
 }
 ```
 
-## 參數裝飾器
+### 參數裝飾器
 
 Nest 是以 Express 或 Fastify 作為底層基礎進行整合的框架，在很多地方都是對底層平台進行包裝的，其中的參數正是包裝出來的，透過特定的參數裝飾器來取得不同的資訊，除了前面幾項以外，還有許多參數裝飾器來提供開發人員取得更多資訊：
 
@@ -213,11 +230,11 @@ Nest 是以 Express 或 Fastify 作為底層基礎進行整合的框架，在很
 - `@Ip()`：IP 的裝飾器，相當於 `req.ip`。
 - `@HostParam()`：host 的裝飾器，相當於 `req.hosts`。
 
-## 處理回應的方式
+### 處理回應的方式
 
 除了 `return` 之外，Nest 還提供了兩種處理回應的方式：
 
-### 標準模式
+#### 標準模式
 
 透過 `return` 讓 Nest 處理回應動作，官方最推薦的方式。
 
@@ -227,7 +244,7 @@ Nest 是以 Express 或 Fastify 作為底層基礎進行整合的框架，在很
     RxJS 是近年來十分熱門的函式庫，在 Angular 中可以經常看到它的身影，而受到 Angular 啟發的 Nest 也跟進使用了 RxJS。
     Nest 會自動訂閱 / 取消訂閱對象，無須手動取消訂閱。
 
-### 函式庫模式
+#### 函式庫模式
 
 使用底層框架的回應物件來處理回應，不透過 return 的方式讓 Nest 處理。
 
@@ -245,7 +262,7 @@ export class TodoController {
 
 >**注意**：須依照使用的底層框架來決定 res 的型別，範例中使用 Express 作為底層，故用其 Response 型別。
 
-### 模式的限制
+#### 模式的限制
 
 Nest 會去偵測是否有帶 `@Res`、`@Response`、`@Next` 裝飾器的參數，如果有的話，該資源就會啟用函式庫模式，而**標準模式會被關閉 (return 失效)**。
 

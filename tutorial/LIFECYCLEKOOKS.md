@@ -1,5 +1,11 @@
 # Lifecycle Hooks
 
+- [onModuleInit](#onmoduleinit)
+- [onApplicationBootstrap](#onapplicationbootstrap)
+- [onModuleDestroy](#onmoduledestroy)
+- [beforeApplicationShutdown](#beforeapplicationshutdown)
+- [onApplicationShutdown](#onapplicationshutdown)
+
 Nest 也有設計 Lifecycle Hook，按照順序排列共分成下方五個時間點：
 
 1. Module 初始化階段：`onModuleInit`
@@ -11,8 +17,6 @@ Nest 也有設計 Lifecycle Hook，按照順序排列共分成下方五個時間
 需特別注意的是，在關閉時間點的 Hook 必須要在 `bootstrap` 執行時調用 `app.enableShutdownHooks()` 來開啟此功能，會在執行 `app.close()` 或收到系統關閉訊號時 (`Ctrl + C`) 被觸發。
 
 >**注意**：由於關閉時執行的 Hook 會消耗較多的效能在監聽事件上，故預設是不啟用的。
-
-
 
 ## onModuleInit
 

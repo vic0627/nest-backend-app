@@ -2,6 +2,27 @@
 
 Pipe 經常被用來處理使用者傳入的參數，比如：驗證參數的正確性、型別的轉換等。
 
+- [Nest Pipe](#nest-pipe)
+  - [使用 Pipe](#使用-pipe)
+    - [內建 Pipe 自訂 HttpCode](#內建-pipe-自訂-httpcode)
+    - [內建 Pipe 自訂 Exception](#內建-pipe-自訂-exception)
+  - [自訂 Pipe](#自訂-pipe)
+  - [DTO 格式驗證](#dto-格式驗證)
+    - [關閉錯誤細項](#關閉錯誤細項)
+    - [自訂 Exception](#自訂-exception)
+    - [自動過濾屬性](#自動過濾屬性)
+    - [自動轉換](#自動轉換)
+    - [檢測陣列 DTO](#檢測陣列-dto)
+      - [解析 Query](#解析-query)
+    - [DTO 技巧](#dto-技巧)
+      - [局部性套用 Partial](#局部性套用-partial)
+      - [選擇性套用 Pick](#選擇性套用-pick)
+      - [忽略套用 Omit](#忽略套用-omit)
+      - [合併套用 Intersection](#合併套用-intersection)
+      - [組合應用](#組合應用)
+  - [全域 Pipe](#全域-pipe)
+    - [依賴注入實作全域 Pipe](#依賴注入實作全域-pipe)
+
 ## Nest Pipe
 
 在 Nest 中，Pipe 支援 Exception 的錯誤處理機制，當在 Pipe 拋出 Exception 時，該次請求就 不會 進入到 Controller 對應的方法裡，這樣的設計方法能夠有效隔離驗證程序與主執行程序，是非常好的實作方式。
@@ -277,7 +298,7 @@ create(@Body() dto: CreateTodoDto) {
 
 若用在路由參數，因路由參數收到的時候都會是 `string`，透過 `transform` Nest 會嘗試去轉換成指定的型別。
 
-### 檢測陣列 DTO
+#### 檢測陣列 DTO
 
 如果傳入的物件為陣列格式，不能使用 `ValidationPipe`，要使用 `ParseArrayPipe`，並在 `items` 帶入其 DTO：
 
@@ -291,7 +312,7 @@ create(
 }
 ```
 
-#### 解析 Query
+##### 解析 Query
 
 假設 Query 為 `?ids=1,2,3`，此時就可以善用此方法來解析出各個 `id`，只需要添加 `separator` 去判斷以什麼作為分界點：
 
@@ -305,11 +326,11 @@ get(
 }
 ```
 
-### DTO 技巧
+#### DTO 技巧
 
 當許多的 DTO 有重複的屬性時，可以運用特殊的繼承方式來處理。
 
-#### 局部性套用 Partial
+##### 局部性套用 Partial
 
 繼承 **該 DTO 所有欄位**，但全部轉換為**非必要**屬性。
 
@@ -321,7 +342,7 @@ export class UpdateTodoDto extends PartialType(CreateTodoDto) {}
 
 如此，新 DTO 會繼承原 DTO 所有屬性，但全部會成為非必要屬性，並於各個屬性上新增 `@IsOptional` 裝飾器。
 
-#### 選擇性套用 Pick
+##### 選擇性套用 Pick
 
 用既有的 DTO 去**選擇**哪些是會用到的屬性，使用 `PickType` 來把要取用的 DTO 帶進去以及指定要取用的屬性名稱，並繼承給新的 DTO：
 
@@ -331,7 +352,7 @@ export class UpdateTodoDto extends PickType(CreateTodoDto,  ['title']) {}
 
 `UpdateTodoDto` 繼承了 `CreateTodoDto` 中的 `title` 屬性。
 
-#### 忽略套用 Omit
+##### 忽略套用 Omit
 
 用既有的 DTO 但**忽略**不會用到的屬性，使用 `OmitType` 把要取用的 DTO 帶進去以及指定要忽略的屬性名稱：
 
@@ -341,7 +362,7 @@ export class UpdateTodoDto extends OmitType(CreateTodoDto,  ['title']) {}
 
 `UpdateTodoDto` 繼承了 `CreateTodoDto` 中除了 `title` 以外的屬性。
 
-#### 合併套用 Intersection
+##### 合併套用 Intersection
 
 用既有的**兩個** DTO 來合併屬性，使用 `IntersectionType` 把要取用的兩個 DTO 帶進去，並給新的 DTO 繼承：
 
@@ -351,7 +372,7 @@ export class UpdateTodoDto extends IntersectionType(CreateTodoDto, MockDto) {}
 
 `UpdateTodoDto` 繼承了 `CreateTodoDto` 與 `MockDto` 的所有屬性。
 
-#### 組合應用
+##### 組合應用
 
 `PartialType`、`PickType`、`OmitType`、`IntersectionType` 可以透過組合的方式來使用：
 

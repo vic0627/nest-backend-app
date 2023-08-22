@@ -1,5 +1,8 @@
 # Dynamic Module
 
+- [設計 Dynamic Module](#設計-dynamic-module)
+- [使用 Dynamic Module](#使用-dynamic-module)
+
 **動態模組(Dynamic Module)** 可以用很簡單的方式去客製化 Provider 的內容，使該 Module 的 Provider 動態化。
 
 ![Dynamic Module](./imgs/dm1.png)

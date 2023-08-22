@@ -1,5 +1,18 @@
 # Exception & Exception filters
 
+- [What is Exception?](#what-is-exception)
+  - [Nest 錯誤處理機制](#nest-錯誤處理機制)
+- [標準 Exception](#標準-exception)
+  - [Built-in Http Exception](#built-in-http-exception)
+- [自訂 Exception](#自訂-exception)
+- [自訂 Exception Filter](#自訂-exception-filter)
+  - [ArgumentsHost](#argumentshost)
+    - [取得當前應用類型](#取得當前應用類型)
+    - [取得封裝參數](#取得封裝參數)
+  - [使用 Exception filter](#使用-exception-filter)
+    - [全域 Exception filter](#全域-exception-filter)
+    - [用依賴注入實作全域 Exception filter](#用依賴注入實作全域-exception-filter)
+
 ## What is Exception?
 
 系統發生了錯誤，導致原本程序無法完成的情況，這種時候會盡可能把錯誤轉化為有效資訊。
@@ -109,7 +122,7 @@ export class CustomException extends HttpException {
 }
 ```
 
-## 自訂 Exceotion Filter
+## 自訂 Exception Filter
 
 若要完全掌握錯誤處理機制的話，Nest 是可以自訂 Exception filter 的，透過這樣的方式來添加 log，或是直接在這個層級定義回傳的格式。
 

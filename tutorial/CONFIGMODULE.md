@@ -1,5 +1,14 @@
 # ConfigModule
 
+- [安裝 ConfigModule](#安裝-configmodule)
+- [使用 ConfigModule](#使用-configmodule)
+  - [自訂 .env](#自訂-env)
+  - [使用工廠函式](#使用工廠函式)
+  - [使用工廠函式配置命名空間](#使用工廠函式配置命名空間)
+  - [在 main.ts 中使用 ConfigService](#在-maints-中使用-configservice)
+  - [環境變數檔之擴展變數](#環境變數檔之擴展變數)
+  - [全域 ConfigModule](#全域-configmodule)
+
 在 Nest 中，可以使用官方製作的 `ConfigModule` 來讀取並管理環境變數。
 
 ## 安裝 ConfigModule

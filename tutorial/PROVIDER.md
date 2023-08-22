@@ -1,5 +1,18 @@
 # Provider
 
+- [標準 Provider](#標準-provider)
+- [自訂 Provider](#自訂-provider)
+  - [Value Provider](#value-provider)
+    - [非類別型 token](#非類別型-token)
+  - [Class Provider](#class-provider)
+  - [Factory Provider](#factory-provider)
+  - [Alias Provider](#alias-provider)
+- [依賴注入 Dependency Injection](#依賴注入-dependency-injection)
+  - [Nest 的依賴注入機制](#nest-的依賴注入機制)
+- [匯出自訂 Provider](#匯出自訂-provider)
+  - [非同步 Provider](#非同步-provider)
+  - [自選式 Provider](#自選式-provider)
+
 Provider 透過**控制反轉容器**做實例的管理，可以很方便且有效地使用這些 Provider，而 Provider 大致上可以分成兩種：
 
 ## 標準 Provider
@@ -204,7 +217,7 @@ export class AppController {
 }
 ```
 
-## Alias Provider
+### Alias Provider
 
 替已經存在的 Provider 取別名，使用 `useExist` 來指定要使用哪個 Provider。以 `app.module.ts` 為例：
 

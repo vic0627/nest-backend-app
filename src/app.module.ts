@@ -18,14 +18,18 @@ import { AddUserMiddleware } from './middlewares/add-user/add-user.middleware';
 // import { CopyTodoModule } from './features/copy-todo/copy-todo.module';
 // import { HandsomeModule } from './handsome/handsome.module';
 // import { ConfigurationModule } from './common/configuration/configuration.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import configurationFactory from './config/configuration.factory';
 import dbConfigurationFactory from './config/db-configuration.factory';
 import appConfigurationFactory from './config/app-configuration.factory';
+import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { MulterHelper } from './core/helpers/multer.helper';
+import { HttpModule } from '@nestjs/axios';
+import { Agent } from 'https';
 
 @Module({
   imports: [
-    TodoModule,
     ConfigModule.forRoot({
       envFilePath: `${process.env.NODE_ENV || ''}.env`,
       load: [
@@ -35,6 +39,21 @@ import appConfigurationFactory from './config/app-configuration.factory';
       ],
       expandVariables: true,
       isGlobal: true,
+    }),
+    HttpModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => ({
+        httpsAgent: new Agent({ rejectUnauthorized: false }),
+        timeout: config.get('HTTP_TIMEOUT'),
+      }),
+      inject: [ConfigService],
+    }),
+    TodoModule,
+    MulterModule.register({
+      storage: diskStorage({
+        destination: MulterHelper.destination,
+        filename: MulterHelper.filenameHandler,
+      }),
     }),
   ],
   controllers: [AppController],
