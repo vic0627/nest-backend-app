@@ -10,11 +10,11 @@ node.js 圈子中，最熱門的帳戶驗證管理工具 [Passport.js](http://ww
 
 `passport` 本身是用來處理 **驗證流程** 的，而 `passport strategy` 則是 **驗證機制**，兩者缺一不可，整個 `passport` 生態系有上百種的驗證機制讓開發人員使用，如：facebook 驗證策略、google 驗證策略、本地驗證策略等，完美解決各種驗證機制的處理。
 
-![a1](./imgs/a1.pn)
+![a1](./imgs/a1.png)
 
 在 Nest 中，`passport strategy` 會與 Guard 進行搭配，透過 `AuthGuard` 將 `strategy` 包裝起來，就可以透過 Nest 的 Guard 機制來與 `passport` 做完美的搭配。
 
-![a2](./imgs/a2.pn)
+![a2](./imgs/a2.png)
 
 ## 安裝 passport
 
@@ -74,4 +74,28 @@ export const UserDefinition: ModelDefinition = {
 ```
 
 共設計了三個欄位，分別為：`username`、`email` 與 `password`，其中，`password` 為巢狀結構，原因是我們不希望密碼直接儲存在資料庫裡面，而是透過密碼學中的**加鹽**來替密碼進行加密。
+
+### 鹽加密
+
+![a3](./imgs/a3.png)
+
+鹽加密的概念是將 **輸入值(input)** 與 **某個特定的值(salt)** 進行加密，最後會得出一個 **結果(hash)**。
+
+在 `src/core/utils` 下新增一個 `common.utility.ts` 檔案，並設計一個靜態方法 `encryptBySalt`，它有兩個參數：`input` 與 `salt`，其中，`salt` 的預設值為 `randomBytes` 計算出來的值，而 `input` 與 `salt` 透過 `pbkdf2Sync` 進行 SHA-256 加密並迭代 1000 次，最終返回 `hash` 與 `salt`：
+
+```ts
+import { randomBytes, pbkdf2Sync } from 'crypto';
+
+export class CommonUtility {
+  public static encryptBySalt(
+    input: string,
+    salt = randomBytes(16).toString('hex'),
+  ) {
+    const hash = pbkdf2Sync(input, salt, 1000, 64, 'sha256').toString('hex');
+    return { hash, salt };
+  }
+}
+```
+
+### 模組設計
 

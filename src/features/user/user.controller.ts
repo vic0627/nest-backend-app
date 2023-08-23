@@ -11,11 +11,15 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDTO, UpdateUserDTO } from 'src/common/models/user.model';
+import { MailerService } from 'src/common/mailer/mailer.service';
 
 @Controller('users')
 @UsePipes(ValidationPipe)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly mailerService: MailerService,
+  ) {}
 
   @Post()
   create(@Body() body: UserDTO) {
@@ -40,5 +44,11 @@ export class UserController {
   @Delete(':id')
   removeById(@Param('id') id: string) {
     return this.userService.removeById(id);
+  }
+
+  @Post('mail')
+  senddmail(@Body() body: any) {
+    const { to, subject, text, html } = body;
+    return this.mailerService.sendMail(to, subject, text, html);
   }
 }

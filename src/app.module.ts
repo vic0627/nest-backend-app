@@ -27,13 +27,20 @@ import { HttpModule } from '@nestjs/axios';
 import { Agent } from 'https';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './features/user/user.module';
+import { MailerService } from './common/mailer/mailer.service';
 import mongoFactory from './config/mongo.factory';
+import mailerFactory from './config/mailer.factory';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: `${process.env.NODE_ENV || ''}.env`,
-      load: [configurationFactory, appConfigurationFactory, mongoFactory],
+      load: [
+        configurationFactory,
+        appConfigurationFactory,
+        mongoFactory,
+        mailerFactory,
+      ],
       expandVariables: true,
       isGlobal: true,
     }),
@@ -62,7 +69,7 @@ import mongoFactory from './config/mongo.factory';
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, MailerService],
 })
 export class AppModule
   implements
