@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Module,
   NestModule,
@@ -20,25 +19,30 @@ import { AddUserMiddleware } from './middlewares/add-user/add-user.middleware';
 // import { ConfigurationModule } from './common/configuration/configuration.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configurationFactory from './config/configuration.factory';
-import dbConfigurationFactory from './config/db-configuration.factory';
 import appConfigurationFactory from './config/app-configuration.factory';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { MulterHelper } from './core/helpers/multer.helper';
 import { HttpModule } from '@nestjs/axios';
 import { Agent } from 'https';
+import { MongooseModule } from '@nestjs/mongoose';
+import { UserModule } from './features/user/user.module';
+import mongoFactory from './config/mongo.factory';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: `${process.env.NODE_ENV || ''}.env`,
-      load: [
-        configurationFactory,
-        dbConfigurationFactory,
-        appConfigurationFactory,
-      ],
+      load: [configurationFactory, appConfigurationFactory, mongoFactory],
       expandVariables: true,
       isGlobal: true,
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => ({
+        uri: config.get<string>('mongo.uri'),
+      }),
     }),
     HttpModule.registerAsync({
       imports: [ConfigModule],
@@ -55,6 +59,7 @@ import { Agent } from 'https';
         filename: MulterHelper.filenameHandler,
       }),
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

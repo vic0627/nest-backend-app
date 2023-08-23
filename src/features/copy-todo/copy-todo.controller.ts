@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Body, Controller, Post } from '@nestjs/common';
 import { CopyTodoService } from './copy-todo.service';
 

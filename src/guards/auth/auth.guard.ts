@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';

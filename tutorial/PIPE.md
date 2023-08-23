@@ -330,6 +330,12 @@ get(
 
 當許多的 DTO 有重複的屬性時，可以運用特殊的繼承方式來處理。
 
+以下的繼承方法皆來自於 `@nestjs/swagger`，需另外安裝：
+
+```text
+npm install @nestjs/swagger
+```
+
 ##### 局部性套用 Partial
 
 繼承 **該 DTO 所有欄位**，但全部轉換為**非必要**屬性。

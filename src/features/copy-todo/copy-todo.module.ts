@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Module, Global } from '@nestjs/common';
 import { CopyTodoService } from './copy-todo.service';
 

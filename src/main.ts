@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { config } from 'dotenv';
@@ -6,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 
 config();
 
-declare const module: any;
+// declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,9 +16,9 @@ async function bootstrap() {
 
   console.log(`[App] listening at port ${port}!`);
 
-  if (module.hot) {
-    module.hot.accept();
-    module.hot.dispose(() => app.close());
-  }
+  // if (module.hot) {
+  //   module.hot.accept();
+  //   module.hot.dispose(() => app.close());
+  // }
 }
 bootstrap();

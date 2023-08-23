@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Controller,
   Get,
@@ -31,7 +30,7 @@ import { ModuleRef } from '@nestjs/core';
 import { CopyTodoService } from './features/copy-todo/copy-todo.service';
 // import { HandsomeModule } from './handsome/handsome.module';
 import { Observable, filter, map } from 'rxjs';
-import { Todo } from './common/models/todo.model';
+import { TodoItem } from './common/models/todo.model';
 import { ParseIntPipe } from './pipes/parse-int/parse-int.pipe';
 
 @Controller()
@@ -134,5 +133,4 @@ export class AppController {
         map((todos) => todos.filter((todo) => todo.userId === userIdNumber)),
       );
   }
-
 }

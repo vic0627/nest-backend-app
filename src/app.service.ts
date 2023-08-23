@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { AxiosInstance } from 'axios';
 import { Observable, map, delay } from 'rxjs';
-import { Todo } from './common/models/todo.model';
+import { TodoItem } from './common/models/todo.model';
 
 @Injectable()
 export class AppService {
@@ -12,9 +12,9 @@ export class AppService {
     return 'Hello World!';
   }
 
-  getTodos(): Observable<Todo[]> {
+  getTodos(): Observable<TodoItem[]> {
     return this.http
-      .get<Todo[]>('https://jsonplaceholder.typicode.com/todos')
+      .get<TodoItem[]>('https://jsonplaceholder.typicode.com/todos')
       .pipe(
         delay(4000),
         map((res) => res.data),
