@@ -8,6 +8,7 @@ import {
   OnModuleDestroy,
   BeforeApplicationShutdown,
   OnApplicationShutdown,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -30,6 +31,9 @@ import { UserModule } from './features/user/user.module';
 import { MailerService } from './common/mailer/mailer.service';
 import mongoFactory from './config/mongo.factory';
 import mailerFactory from './config/mailer.factory';
+import { APP_PIPE } from '@nestjs/core';
+import { AuthModule } from './features/auth/auth.module';
+import { CaptchaService } from './common/captcha/captcha.service';
 
 @Module({
   imports: [
@@ -67,9 +71,18 @@ import mailerFactory from './config/mailer.factory';
       }),
     }),
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, MailerService],
+  providers: [
+    AppService,
+    MailerService,
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+    CaptchaService,
+  ],
 })
 export class AppModule
   implements
@@ -86,6 +99,7 @@ export class AppModule
       .forRoutes(
         { path: '/todos', method: RequestMethod.POST },
         { path: '/', method: RequestMethod.GET },
+        { path: '/session', method: RequestMethod.GET },
       );
   }
 

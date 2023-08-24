@@ -5,6 +5,7 @@ import {
   Email,
   MailOptions,
   TransportOptions,
+  SendMailOptions,
 } from './interfaces/mailer.interface';
 
 @Injectable()
@@ -16,12 +17,7 @@ export class MailerService {
     this.createTransport();
   }
 
-  public async sendMail(
-    to: Email | Email[],
-    subject: string,
-    text?: string,
-    html?: string,
-  ) {
+  public async sendMail({ to, subject, text, html }: SendMailOptions) {
     const mailOptions: MailOptions = {
       from: this.transportOptions.auth.user,
       to: Array.isArray(to) ? to.join(', ') : to,

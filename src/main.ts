@@ -2,6 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { config } from 'dotenv';
 import { ConfigService } from '@nestjs/config';
+import * as session from 'express-session';
+
+declare module 'express-session' {
+  interface SessionData {
+    [key: string]: any;
+  }
+}
 
 config();
 
@@ -12,6 +19,14 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get('PORT');
   app.enableShutdownHooks();
+  app.use(
+    session({
+      secret: 'nestjs session',
+      resave: false,
+      saveUninitialized: true,
+      cookie: { secure: false },
+    }),
+  );
   await app.listen(port);
 
   console.log(`[App] listening at port ${port}!`);

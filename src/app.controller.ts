@@ -9,6 +9,8 @@ import {
   UploadedFile,
   UploadedFiles,
   Res,
+  Body,
+  Req,
 } from '@nestjs/common';
 import {
   FileInterceptor,
@@ -16,7 +18,7 @@ import {
   FileFieldsInterceptor,
   AnyFilesInterceptor,
 } from '@nestjs/platform-express';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { AppService } from './app.service';
 import { HelloWorldInterceptor } from './interceptors/hello-world/hello-world.interceptor';
 import { User } from './decorators/user/user.decorator';
@@ -132,5 +134,12 @@ export class AppController {
       .pipe(
         map((todos) => todos.filter((todo) => todo.userId === userIdNumber)),
       );
+  }
+
+  @Get('/session')
+  setSession(@Req() req: Request) {
+    return (req.session.visits = req.session.visits
+      ? req.session.visits + 1
+      : 1);
   }
 }

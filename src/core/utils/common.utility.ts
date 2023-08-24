@@ -8,4 +8,8 @@ export class CommonUtility {
     const hash = pbkdf2Sync(input, salt, 1000, 64, 'sha256').toString('hex');
     return { hash, salt };
   }
+
+  public static generateRandomNumber() {
+    return Math.floor(Math.random() * 10);
+  }
 }

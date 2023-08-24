@@ -1,56 +1,60 @@
-import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { PartialType } from '@nestjs/swagger';
 import {
-  IsNotEmpty,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
-import { Type } from 'class-transformer';
+  Prop,
+  raw,
+  Schema,
+  SchemaFactory,
+  ModelDefinition,
+} from '@nestjs/mongoose';
+import { PartialType } from '@nestjs/swagger';
+import { IsNotEmpty, IsString, MinLength, MaxLength } from 'class-validator';
 import { Document } from 'mongoose';
+import { Email } from '../mailer/interfaces/mailer.interface';
 
 export type UserDocument = User & Document;
 
 @Schema()
 export class User {
-  @Prop(
-    raw({
-      firstName: { type: String },
-      lastName: { type: String },
-      fullName: { type: String },
-    }),
-  )
-  name: Record<string, any>;
+  @Prop({
+    required: true,
+    minlength: 2,
+    maxlength: 16,
+  })
+  name: string;
 
   @Prop({ required: true })
-  email: string;
+  email: Email;
+
+  @Prop({
+    type: raw({
+      hash: String,
+      salt: String,
+    }),
+    required: true,
+  })
+  password: Record<string, any>;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-export class UserNameDTO {
-  @IsString()
-  @IsNotEmpty()
-  firstName: string;
+export const USER_MODEL_TOKEN = User.name;
 
-  @IsString()
-  @IsNotEmpty()
-  lastName: string;
-
-  @IsString()
-  @IsNotEmpty()
-  fullName: string;
-}
+export const UserDefinition: ModelDefinition = {
+  name: USER_MODEL_TOKEN,
+  schema: UserSchema,
+};
 
 export class UserDTO {
-  @ValidateNested()
-  @Type(() => UserNameDTO)
-  name: UserNameDTO;
+  @MinLength(2)
+  @MaxLength(16)
+  public readonly name: string;
 
   @IsString()
   @IsNotEmpty()
-  email: string;
-}
+  public readonly email: Email;
 
-export class UpdateUserNameDTO extends PartialType(UserNameDTO) {}
+  @MinLength(8)
+  @MaxLength(20)
+  public readonly password: string;
+}
 
 export class UpdateUserDTO extends PartialType(UserDTO) {}

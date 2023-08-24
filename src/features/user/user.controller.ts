@@ -49,6 +49,6 @@ export class UserController {
   @Post('mail')
   senddmail(@Body() body: any) {
     const { to, subject, text, html } = body;
-    return this.mailerService.sendMail(to, subject, text, html);
+    return this.mailerService.sendMail({ to, subject, text, html });
   }
 }

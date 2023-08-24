@@ -15,3 +15,10 @@ export interface MailOptions {
   text?: string;
   html?: string;
 }
+
+export type SendMailOptions = {
+  to: Email | Email[];
+  subject: string;
+  text?: string;
+  html?: string;
+};
