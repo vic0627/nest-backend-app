@@ -99,3 +99,74 @@ export class CommonUtility {
 
 ### 模組設計
 
+這邊會需要建立兩個模組：`UserModule` 與 `AuthModule`，`UserModule` 是用來處理與使用者相關的操作，而 `AuthModule` 則是處理與身分驗證有關的操作，基本上 `AuthModule` 必定與 `UserModule` 產生依賴，因為要有使用者才有辦法做身分驗證。
+
+#### 使用者模組
+
+`UserModule` 因為要對使用者資料進行操作，需要使用 `MongooseModule` 來建立 `model`，又因為 `AuthModule` 會依賴於 `UserModule` 去操作使用者資料，故我們要將 `UserService` 匯出讓 `AuthModule` 可以透過 `UserService` 去操作使用者資料：
+
+```ts
+// ...
+import { MongooseModule } from '@nestjs/mongoose';
+import { UserDefinition } from '../../common/models/user.model';
+
+@Module({
+  imports: [MongooseModule.forFeature([UserDefinition])],
+  providers: [UserService],
+  exports: [UserService],
+})
+export class UserModule {}
+```
+
+設計一個 DTO 來給定參數型別與進行簡單的資料驗證，新增 `create-user.dto.ts`：
+
+```ts
+export class CreateUserDto {
+  @MinLength(6)
+  @MaxLength(16)
+  public readonly username: string;
+
+  @MinLength(8)
+  @MaxLength(20)
+  public readonly password: string;
+
+  @IsNotEmpty()
+  public readonly email: string;
+}
+```
+
+在 `AppModule` 透過依賴注入的方式來啟用 `ValidationPipe`：
+
+```ts
+// ...
+import { APP_PIPE } from '@nestjs/core';
+import { Module, ValidationPipe } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      load: [MongoConfigFactory],
+      isGlobal: true
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        uri: config.get<string>('mongo.uri'),
+      }),
+    }),
+    UserModule,
+    AuthModule,
+  ],
+  controllers: [AppController],
+  providers: [
+    AppService,
+    { // 注入全域 Pipe
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+  ],
+})
+export class AppModule {}
+```
