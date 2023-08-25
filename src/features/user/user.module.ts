@@ -9,6 +9,7 @@ import {
   UserSchema,
 } from 'src/common/models/user.model';
 import { MailerService } from 'src/common/mailer/mailer.service';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [MongooseModule.forFeature([UserDefinition])],

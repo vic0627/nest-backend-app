@@ -3,16 +3,18 @@ import {
   Post,
   Body,
   Req,
+  Res,
   HttpException,
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from '../user/user.service';
-import { UserDTO } from 'src/common/models/user.model';
+import { UserDTO, UserDocument } from 'src/common/models/user.model';
 import { CaptchaService } from 'src/common/captcha/captcha.service';
 import { MailerService } from 'src/common/mailer/mailer.service';
-import { Request } from 'express';
+import { Request, Response } from 'express';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
@@ -23,6 +25,7 @@ export class AuthController {
     private readonly userService: UserService,
     private readonly captchaService: CaptchaService,
     private readonly mailerService: MailerService,
+    private readonly authService: AuthService,
   ) {}
 
   @Post('signup')
@@ -38,8 +41,14 @@ export class AuthController {
 
   @UseGuards(AuthGuard('local'))
   @Post('signin')
-  signin(@Req() request: Request) {
-    return request.user;
+  signin(@Req() req: Request, @Res() res: Response) {
+    const jwt = this.authService.generateJwt(req.user as UserDocument);
+
+    const { id, name, access_token } = jwt;
+
+    res.cookie('jwt', access_token, { maxAge: 600000, httpOnly: true });
+
+    res.send({ id, name, access_token });
   }
 
   @Post('validate-email')

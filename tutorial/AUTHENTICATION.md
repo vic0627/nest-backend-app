@@ -1,4 +1,16 @@
-# Authentication
+# Authentication (Passport.js, passport-local)
+
+- [passport 介紹](#passport-介紹)
+- [安裝 passport](#安裝-passport)
+- [實作帳戶註冊](#實作帳戶註冊)
+  - [定義 Schema](#定義-schema)
+  - [鹽加密](#鹽加密)
+  - [模組設計](#模組設計)
+    - [使用者模組](#使用者模組)
+    - [驗證模組](#驗證模組)
+  - [實作本地帳戶登入](#實作本地帳戶登入)
+    - [實作策略](#實作策略)
+    - [使用 AuthGuard](#使用-authguard)
 
 一個應用程式可能會有非常多種的註冊方式，每一種方式都有一套自己的 **策略(Strategy)**，所以管理各種 **帳戶驗證(Authentication)** 的策略也是非常重要。
 
@@ -169,4 +181,176 @@ import { MongooseModule } from '@nestjs/mongoose';
   ],
 })
 export class AppModule {}
+```
+
+最後在 `UserService` 注入 `model` 並設計 `createUser(user: CreateUserDto)` 方法來建立使用者，其中，`password` 需要透過鹽加密來處理：
+
+```ts
+@Injectable()
+export class UserService {
+  constructor(
+    @InjectModel(USER_MODEL_TOKEN)
+    private readonly userModel: Model<UserDocument>,
+  ) {}
+
+  createUser(user: CreateUserDto) {
+    const { username, email } = user;
+    const password = CommonUtility.encryptBySalt(user.password);
+    return this.userModel.create({
+      username,
+      email,
+      password,
+    });
+  }
+}
+```
+
+#### 驗證模組
+
+透過 CLI 在 `src/features` 下產生 `AuthModule` 與 `AuthController`：
+
+```text
+nest generate module features/auth
+nest generate controller features/auth
+```
+
+在 `AuthModule` 中匯入 `UserModule`：
+
+```ts
+@Module({
+  imports: [UserModule],
+  controllers: [AuthController],
+})
+export class AuthModule {}
+```
+
+接著，在 `AuthController` 設計一個 `[POST] /auth/signup` 的 API，並調用 `UserService` 的 `createUser(user: CreateUserDto)` 方法來建立使用者：
+
+```ts
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly userService: UserService) {}
+
+  @Post('/signup')
+  signup(@Body() user: CreateUserDto) {
+    return this.userService.createUser(user);
+  }
+}
+```
+
+### 實作本地帳戶登入
+
+在登入的過程中，會進行一些帳號密碼的檢測，檢測通過之後便完成登入程序。本地帳戶登入可以使用 `passport-local` 這個 `strategy` 與 `passport` 進行搭配，透過 `npm` 進行安裝即可：
+
+```text
+npm install passport-local
+npm install @types/passport-local -D
+```
+
+#### 實作策略
+
+在 `UserService` 添加一個 `findUser` 方法來取得使用者資料，用途是讓使用者輸入 `email` 與 `password` 後，可以去資料庫中尋找對應的使用者：
+
+```ts
+@Injectable()
+export class UserService {
+  constructor(
+    @InjectModel(USER_MODEL_TOKEN)
+    private readonly userModel: Model<UserDocument>,
+  ) {}
+
+  // ...
+
+  async findUser(filter: FilterQuery<UserDocument>) {
+    return await this.userModel.findOne(filter);
+  }
+}
+```
+
+透過 CLI 產生 `AuthService` 來處理檢測帳戶的工作：
+
+```text
+nest generate service features/auth
+```
+
+在 `AuthService` 設計一個 `validateUser(username: string, password: string)` 的方法，先透過 `username` 尋找對應的使用者資料，再針對使用者輸入的密碼與 `salt` 進行鹽加密，如果結果與資料庫中的 `hash` 相同，就回傳使用者資料，否則回傳 `null`：
+
+```ts
+@Injectable()
+export class AuthService {
+
+  constructor(private readonly userService: UserService) {}
+  
+  async validateUser(username: string, password: string) {
+    const user = await this.userService.findUser({ username });
+    const { hash } = CommonUtility.encryptBySalt(password, user?.password?.salt);
+    if (!user || hash !== user?.password?.hash) {
+      return null;
+    }
+    return user;
+  }
+
+}
+```
+
+完成了使用者驗證的方法後，需要建立一個 Provider 來作為 `strategy`，將驗證方法與 `passport` 的機制接上。
+
+建立 `local.strategy.ts`，在這個檔案中實作一個 `LocalStrategy` 的 `class`，需特別注意的是該 `class` 要繼承 `passport-local` 的 `strategy`，但需要透過 Nest 製作的 `function` 來與它做串接，並實作 `validate(username: string, password: string)` 方法，該方法即為 `passport` 流程的 **進入點**，在這裡我們就用呼叫剛剛在 `AuthService` 實作的方法來進行帳號驗證：
+
+```ts
+import { PassportStrategy } from '@nestjs/passport';
+import { Strategy } from 'passport-local';
+
+@Injectable()
+export class LocalStrategy extends PassportStrategy(Strategy) {
+  
+  constructor(private readonly authService: AuthService) {
+    super({ usernameField: 'email' });
+  }
+
+  async validate(email: Email, password: string) {
+    const user = await this.authService.validateUser(email, password);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    return { username: user.username, email: user.email };
+  }
+
+}
+```
+
+>**提醒**：`passport-local` 預設是以 `username`、`password` 兩個欄位進行驗證，如果需要取代欄位名稱，例如 `username` 換成 `email`，需要在 `super()` 內傳遞 `{ usernameField: 'email' }`。
+
+在 `AuthModule` 匯入 `PassportModule` 與在 `providers` 裡面添加 `LocalStrategy`：
+
+```ts
+@Module({
+  imports: [PassportModule, UserModule],
+  controllers: [AuthController],
+  providers: [AuthService, LocalStrategy],
+})
+export class AuthModule {}
+```
+
+#### 使用 AuthGuard
+
+實作一個 API 來處理登入驗證，在 `AuthController` 添加一個 `signin` 方法並套用 `AuthGuard`，因為是使用 `passport-local` 這個 `strategy`，所以要在 `AuthGuard` 帶入 `local` 這個字串，`passport` 會自動與 `LocalStrategy` 進行串接，然後 `passport` 會將 `LocalStrategy` 中 `validate` 方法回傳的值寫入 **請求物件** 的 `user` 屬性中，這樣就可以在 Controller 中使用該使用者的資訊：
+
+```ts
+import { Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
+
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly userService: UserService) {}
+
+  //...
+
+  @UseGuards(AuthGuard('local'))
+  @Post('/signin')
+  signin(@Req() request: Request) {
+      return request.user;
+  }
+}
 ```

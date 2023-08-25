@@ -21,6 +21,7 @@ node^18.15.0
 - [File Upload](./tutorial/FILEUPLOAD.md)
 - [HttpModule](./tutorial/HTTPMODULE.md)
 - [MongoDB](./tutorial/MONGODB.md)
+- [Authentication](./tutorial/AUTHENTICATION.md)
 
 ## 基本概念
 

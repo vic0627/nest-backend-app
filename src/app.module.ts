@@ -31,6 +31,7 @@ import { UserModule } from './features/user/user.module';
 import { MailerService } from './common/mailer/mailer.service';
 import mongoFactory from './config/mongo.factory';
 import mailerFactory from './config/mailer.factory';
+import secretFactory from './config/secret.factory';
 import { APP_PIPE } from '@nestjs/core';
 import { AuthModule } from './features/auth/auth.module';
 import { CaptchaService } from './common/captcha/captcha.service';
@@ -44,6 +45,7 @@ import { CaptchaService } from './common/captcha/captcha.service';
         appConfigurationFactory,
         mongoFactory,
         mailerFactory,
+        secretFactory,
       ],
       expandVariables: true,
       isGlobal: true,
@@ -70,8 +72,8 @@ import { CaptchaService } from './common/captcha/captcha.service';
         filename: MulterHelper.filenameHandler,
       }),
     }),
-    UserModule,
     AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [

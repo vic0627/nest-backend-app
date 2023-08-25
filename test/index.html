@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .sign {
+        width: 300px;
+        height: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+        border-radius: 5px;
+        border: 1px solid #000;
+      }
+      #welcome {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sign">
+      <label for="acc">
+        帳號：
+        <input id="acc" type="text" />
+      </label>
+      <label for="pass">
+        密碼：
+        <input id="pass" type="text" />
+      </label>
+      <button id="btn">送出</button>
+    </div>
+    <div id="welcome">
+      歡迎!
+      <h1 id="name"></h1>
+    </div>
+    <script src="./1.js"></script>
+  </body>
+</html>

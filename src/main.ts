@@ -24,9 +24,10 @@ async function bootstrap() {
       secret: 'nestjs session',
       resave: false,
       saveUninitialized: true,
-      cookie: { secure: false },
+      cookie: { secure: false, maxAge: 600000 },
     }),
   );
+  app.enableCors()
   await app.listen(port);
 
   console.log(`[App] listening at port ${port}!`);
