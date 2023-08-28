@@ -7,7 +7,7 @@ export class MulterHelper {
     file: Express.Multer.File,
     callback: (error: Error | null, destination: string) => void,
   ): void {
-    callback(null, resolve(__dirname, '../../upload'));
+    callback(null, resolve(__dirname, '../../../../upload'));
   }
 
   public static filenameHandler(

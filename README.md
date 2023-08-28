@@ -22,6 +22,7 @@ node^18.15.0
 - [HttpModule](./tutorial/HTTPMODULE.md)
 - [MongoDB](./tutorial/MONGODB.md)
 - [Authentication](./tutorial/AUTHENTICATION.md)
+- [Authentication JWT](./tutorial/JWT.md)
 
 ## 基本概念
 

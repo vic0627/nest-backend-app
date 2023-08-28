@@ -35,6 +35,7 @@ import secretFactory from './config/secret.factory';
 import { APP_PIPE } from '@nestjs/core';
 import { AuthModule } from './features/auth/auth.module';
 import { CaptchaService } from './common/captcha/captcha.service';
+import { ChatModule } from './features/chat/chat.module';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { CaptchaService } from './common/captcha/captcha.service';
     }),
     AuthModule,
     UserModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [
